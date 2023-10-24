@@ -76,7 +76,7 @@ void Connection::handleWriteEvent() {
                 event->enableWriting();
                 return;
             }
-            if (errno == EPIPE)
+            if (errno == EPIPE | ECONNRESET)
                 break;
             error("send error");
         }
