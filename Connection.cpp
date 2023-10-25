@@ -34,8 +34,12 @@ void Connection::handleReadEvent() {
     while (true) {
         int bytes_read;
         if ((bytes_read = recv(event->getFd(), recvbuf, sizeof(recvbuf), 0)) < 0) {
-            if (errno == EAGAIN) {
+            if (errno == EAGAIN)
                 break;
+            if (errno == ECONNRESET) {
+                event->close();
+                delete this;
+                return;
             }
             error("recv error");
         }
